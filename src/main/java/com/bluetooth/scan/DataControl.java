@@ -4,6 +4,7 @@ package com.bluetooth.scan;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.ProgressDialog;
@@ -26,7 +28,7 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 
-public class DataControl extends Activity {
+public class DataControl extends Activity implements  View.OnClickListener {
 
     TextView myLabel;
     EditText myTextbox;
@@ -42,7 +44,8 @@ public class DataControl extends Activity {
     volatile boolean stopWorker;
 
 
-
+    private TextView one, two, three, four, five, six, seven, eight, nine, zero, div, multi, sub, plus, dot, equals, display, clear;
+    private ImageButton backDelete;
    // Button btnOn, btnOff, btnDis;
     Button On, Off, Discnt, Abt;
     String address = null;
@@ -64,18 +67,20 @@ public class DataControl extends Activity {
         address = newint.getStringExtra(DeviceList.EXTRA_ADDRESS); //receive the address of the bluetooth device
 
         //view of the DataControl
-        setContentView(R.layout.activity_send_control);
+        setContentView(R.layout.keyboard);
 
-        //call the widgets
-        On = (Button)findViewById(R.id.on_btn);
-        Off = (Button)findViewById(R.id.off_btn);
+        //call the widge
+       // On = (Button)findViewById(R.id.on_btn);
+       // Off = (Button)findViewById(R.id.off_btn);
         Discnt = (Button)findViewById(R.id.dis_btn);
-        Abt = (Button)findViewById(R.id.abt_btn);
+       // Abt = (Button)findViewById(R.id.abt_btn);
         myLabel=findViewById(R.id.my_text_view);
         sendBtn=findViewById(R.id.send_btn);
-        sendEditText=(EditText)findViewById(R.id.sendEditText);
+       // sendEditText=(EditText)findViewById(R.id.sendEditText);
 
         new ConnectBT().execute(); //Call the class to connect
+
+
 
         //commands to be sent to bluetooth
         sendBtn.setOnClickListener(new View.OnClickListener()
@@ -87,6 +92,8 @@ public class DataControl extends Activity {
             }
         });
 
+       // Toast.makeText(getApplicationContext(),""+isBtConnected,Toast.LENGTH_LONG);
+/*
 
         //commands to be sent to bluetooth
         On.setOnClickListener(new View.OnClickListener()
@@ -102,10 +109,13 @@ public class DataControl extends Activity {
             @Override
             public void onClick(View v)
             {
+               // beginListenForData();
                 turnOffLed();   //method to turn off
+
+
             }
         });
-
+*/
         Discnt.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -116,35 +126,82 @@ public class DataControl extends Activity {
         });
 
       //  beginListenForData();
-        try {
-            receiveData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
+
+
+          //  receiveData();
+        //} catch (IOException e) {
+          //  e.printStackTrace();
+        //}
+
+
+        one = findViewById(R.id.one);
+        two = findViewById(R.id.two);
+        three = findViewById(R.id.three);
+        four = findViewById(R.id.four);
+        five = findViewById(R.id.five);
+        six = findViewById(R.id.six);
+        seven = findViewById(R.id.seven);
+        eight = findViewById(R.id.eight);
+        nine = findViewById(R.id.nine);
+        zero = findViewById(R.id.zero);
+        display =findViewById(R.id.display);
+        clear = findViewById(R.id.clear);
+        backDelete = findViewById(R.id.backDelete);
+
+        one.setOnClickListener(this);
+        two.setOnClickListener(this);
+        three.setOnClickListener(this);
+        four.setOnClickListener(this);
+        five.setOnClickListener(this);
+        six.setOnClickListener(this);
+        seven.setOnClickListener(this);
+        eight.setOnClickListener(this);
+        nine.setOnClickListener(this);
+        zero.setOnClickListener(this);
+        display.setOnClickListener(this);
+        clear.setOnClickListener(this);
+        backDelete.setOnClickListener(this);
     }
 
 
     public void receiveData() throws IOException{
 
-        final Handler handler = new Handler();
+//       final Handler handler = new Handler();
+
+        // Get a handler that can be used to post to the main thread
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+
         if (btSocket!=null)
         {
             try
             {
                 InputStream socketInputStream =  btSocket.getInputStream();
 
-                byte[] buffer = new byte[256];
+                byte[] buffer = new byte[1024];
                 int bytes;
 
                 // Keep looping to listen for received messages
                 while (true) {
                     try {
-                        bytes = socketInputStream.read(buffer);            //read bytes from input buffer
-                        final String readMessage = new String(buffer, 0, bytes);
-                        // Send the obtained bytes to the UI Activity via handler
-                        Log.i("logging", readMessage + "");
+                        if(mmInputStream!=null) {
+                            bytes = mmInputStream.read(buffer);            //read bytes from input buffer
+                            final String readMessage = new String(buffer, 0, bytes);
+                            // Send the obtained bytes to the UI Activity via handler
+                            Log.i("logging", readMessage + "");
 
 
+                            Runnable myRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    myLabel.setText(readMessage);
+                                    //myLabel.append("");
+                                } // This is your code
+                            };
+                            mainHandler.post(myRunnable);
+/*
                         handler.post(new Runnable()
                         {
                             public void run()
@@ -152,6 +209,8 @@ public class DataControl extends Activity {
                                 myLabel.setText(readMessage);
                             }
                         });
+                        */
+                        }
 
                     } catch (IOException e) {
                         break;
@@ -173,9 +232,18 @@ public class DataControl extends Activity {
 
     void beginListenForData()
     {
-        final Handler handler = new Handler();
+      //  final Handler handler = new Handler();
+        // Get a handler that can be used to post to the main thread
+        final Handler mainHandler = new Handler(Looper.getMainLooper());
         final byte delimiter = 10; //This is the ASCII code for a newline character
-
+        Log.d("btSocket",""+btSocket);
+        if(btSocket!=null) {
+            try {
+                mmInputStream = btSocket.getInputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         stopWorker = false;
         readBufferPosition = 0;
         readBuffer = new byte[1024];
@@ -187,32 +255,31 @@ public class DataControl extends Activity {
                 {
                     try
                     {
-                        int bytesAvailable = mmInputStream.available();
-                        if(bytesAvailable > 0)
-                        {
-                            byte[] packetBytes = new byte[bytesAvailable];
-                            mmInputStream.read(packetBytes);
-                            for(int i=0;i<bytesAvailable;i++)
-                            {
-                                byte b = packetBytes[i];
-                                if(b == delimiter)
-                                {
-                                    byte[] encodedBytes = new byte[readBufferPosition];
-                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-                                    final String data = new String(encodedBytes, "US-ASCII");
-                                    readBufferPosition = 0;
+                        if(mmInputStream!=null) {
+                            int bytesAvailable = mmInputStream.available();
+                            if (bytesAvailable > 0) {
+                                byte[] packetBytes = new byte[bytesAvailable];
+                                mmInputStream.read(packetBytes);
+                                for (int i = 0; i < bytesAvailable; i++) {
+                                    byte b = packetBytes[i];
+                                    if (b == delimiter) {
+                                        byte[] encodedBytes = new byte[readBufferPosition];
+                                        System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+                                        final String data = new String(encodedBytes, "US-ASCII");
+                                        readBufferPosition = 0;
+                                        Log.d("btSocket data", "" + data);
+                                        Runnable myRunnable = new Runnable() {
+                                            @Override
+                                            public void run() {
 
-                                    handler.post(new Runnable()
-                                    {
-                                        public void run()
-                                        {
-                                            myLabel.setText(data);
-                                        }
-                                    });
-                                }
-                                else
-                                {
-                                    readBuffer[readBufferPosition++] = b;
+                                                myLabel.setText(data);
+                                                //myLabel.append("");
+                                            } // This is your code
+                                        };
+                                        mainHandler.post(myRunnable);
+                                    } else {
+                                        readBuffer[readBufferPosition++] = b;
+                                    }
                                 }
                             }
                         }
@@ -253,8 +320,6 @@ public class DataControl extends Activity {
             {
 
 
-
-
                 final Handler handler=new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -264,8 +329,8 @@ public class DataControl extends Activity {
                         handler.postDelayed(this,100);
                     }
                 },100);
-
-                btSocket.getOutputStream().write(sendEditText.getText().toString().getBytes());
+                String data="$134"+display.getText().toString()+";";
+                btSocket.getOutputStream().write(data.getBytes());
             }
             catch (IOException e)
             {
@@ -280,7 +345,7 @@ public class DataControl extends Activity {
         {
             try
             {
-                btSocket.getOutputStream().write("Hello".toString().getBytes());
+                mmOutputStream.write("Hello".toString().getBytes());
             }
             catch (IOException e)
             {
@@ -297,7 +362,7 @@ public class DataControl extends Activity {
         {
             try
             {
-                btSocket.getOutputStream().write("Ranojan Kumar".toString().getBytes());
+                mmOutputStream.write("Ranojan Kumar".toString().getBytes());
             }
             catch (IOException e)
             {
@@ -343,6 +408,87 @@ public class DataControl extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(View v) {
+
+        if (v.findViewById(R.id.one) == one) {
+            if (!display.getText().equals("")) {
+                display.append("1");
+            } else {
+                display.setText("1");
+            }
+        } else if (v.findViewById(R.id.two) == two) {
+            if (!display.getText().equals("")) {
+                display.append("2");
+            } else {
+                display.setText("2");
+            }
+        } else if (v.findViewById(R.id.three) == three) {
+            if (!display.getText().equals("")) {
+                display.append("3");
+            } else {
+                display.setText("3");
+            }
+        } else if (v.findViewById(R.id.four) == four) {
+            if (!display.getText().equals("")) {
+                display.append("4");
+            } else {
+                display.setText("4");
+            }
+        } else if (v.findViewById(R.id.five) == five) {
+            if (!display.getText().equals("")) {
+                display.append("5");
+            } else {
+                display.setText("5");
+            }
+        } else if (v.findViewById(R.id.six) == six) {
+            if (!display.getText().equals("")) {
+                display.append("6");
+            } else {
+                display.setText("6");
+            }
+        } else if (v.findViewById(R.id.seven) == seven) {
+            if (!display.getText().equals("")) {
+                display.append("7");
+            } else {
+                display.setText("7");
+            }
+        } else if (v.findViewById(R.id.eight) == eight) {
+            if (!display.getText().equals("")) {
+                display.append("8");
+            } else {
+                display.setText("8");
+            }
+        } else if (v.findViewById(R.id.nine) == nine) {
+            if (!display.getText().equals("")) {
+                display.append("9");
+            } else {
+                display.setText("9");
+            }
+        } else if (v.findViewById(R.id.zero) == zero) {
+            if (!display.getText().equals("")) {
+                display.append("0");
+            } else {
+                display.setText("0");
+            }
+        } else if (v.findViewById(R.id.display) == display) {
+
+        } else if (v.findViewById(R.id.clear) == clear) {
+            display.setText(null);
+        } else if (v.findViewById(R.id.backDelete) == backDelete) {
+            if (!display.getText().equals("")) {
+                String s = display.getText().toString();
+                if (s.length() > 0) {
+                    display.setText(s.substring(0, s.length() - 1));
+                } else {
+                    // Toast.makeText(this, "Nothing to remove", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                //Toast.makeText(this, "nothing to remove", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
 
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
@@ -367,6 +513,9 @@ public class DataControl extends Activity {
                  btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
                  BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                  btSocket.connect();//start connection
+                    mmOutputStream = btSocket.getOutputStream();
+                    mmInputStream = btSocket.getInputStream();
+
                 }
             }
             catch (IOException e)
@@ -389,8 +538,44 @@ public class DataControl extends Activity {
             {
                 msg("Connected.");
                 isBtConnected = true;
+
+
+
+/*
+                try {
+                    receiveData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
             }
             progress.dismiss();
+
+              //beginListenForData();
+//To receive data 555
+            new Thread(new Runnable() {
+                public void run(){
+                    try {
+                        receiveData();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //beginListenForData();
+                }
+            }).start();
+            /*try {
+                receiveData();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+
+            /*if(isBtConnected){
+
+                try {
+                    receiveData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }*/
         }
     }
 }

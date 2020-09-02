@@ -3,6 +3,12 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#3F51B5</color>
+
+
+    <color name="colorDeepBlue">#172734</color>
+    <color name="colorWhite">#FCFCFC</color>
+    <color name="colorBlack">#FF00060B</color>
+    <color name="colorLightBlack">#212121</color>
     <color name="adFilling">#333333</color>
+    <color name="colorAccent">#3F51B5</color>
 </resources>
