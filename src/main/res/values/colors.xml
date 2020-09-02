@@ -11,4 +11,7 @@
     <color name="colorLightBlack">#212121</color>
     <color name="adFilling">#333333</color>
     <color name="colorAccent">#3F51B5</color>
+    <color name="darkRed">#8b0000</color>
+    <color name="red">#FF0000</color>
+
 </resources>

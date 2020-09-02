@@ -2,6 +2,7 @@ package com.bluetooth.scan;
 
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -163,6 +164,9 @@ public class DataControl extends Activity implements  View.OnClickListener {
         display.setOnClickListener(this);
         clear.setOnClickListener(this);
         backDelete.setOnClickListener(this);
+
+        Typeface tf = Typeface.createFromAsset(getApplicationContext().getAssets(), "SevenSegment.ttf");
+        display.setTypeface(tf);
     }
 
 
@@ -414,60 +418,70 @@ public class DataControl extends Activity implements  View.OnClickListener {
         if (v.findViewById(R.id.one) == one) {
             if (!display.getText().equals("")) {
                 display.append("1");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("1");
             }
         } else if (v.findViewById(R.id.two) == two) {
             if (!display.getText().equals("")) {
                 display.append("2");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("2");
             }
         } else if (v.findViewById(R.id.three) == three) {
             if (!display.getText().equals("")) {
                 display.append("3");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("3");
             }
         } else if (v.findViewById(R.id.four) == four) {
             if (!display.getText().equals("")) {
                 display.append("4");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("4");
             }
         } else if (v.findViewById(R.id.five) == five) {
             if (!display.getText().equals("")) {
                 display.append("5");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("5");
             }
         } else if (v.findViewById(R.id.six) == six) {
             if (!display.getText().equals("")) {
                 display.append("6");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("6");
             }
         } else if (v.findViewById(R.id.seven) == seven) {
             if (!display.getText().equals("")) {
                 display.append("7");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("7");
             }
         } else if (v.findViewById(R.id.eight) == eight) {
             if (!display.getText().equals("")) {
                 display.append("8");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("8");
             }
         } else if (v.findViewById(R.id.nine) == nine) {
             if (!display.getText().equals("")) {
                 display.append("9");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("9");
             }
         } else if (v.findViewById(R.id.zero) == zero) {
             if (!display.getText().equals("")) {
                 display.append("0");
+                limitDigit(display.getText().toString());
             } else {
                 display.setText("0");
             }
@@ -490,6 +504,23 @@ public class DataControl extends Activity implements  View.OnClickListener {
         }
     }
 
+
+    public  void limitDigit(String input)
+    {
+
+        String lastFourDigits = "";     //substring containing last 4 characters
+
+        if (input.length() > 4)
+        {
+            lastFourDigits = input.substring(input.length() - 4);
+        }
+        else
+        {
+            lastFourDigits = input;
+        }
+        display.setText(lastFourDigits);
+
+    }
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
     {
