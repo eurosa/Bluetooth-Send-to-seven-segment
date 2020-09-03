@@ -19,4 +19,14 @@
     <string name="empty_list_message">No nearby devices found. Tap on the bottom-right button to start a new device discovery.</string>
     <string name="bluetooth_not_available_message">It seems that this device doesn\'t have a Bluetooth controller available. \nBlue Pair works only with Bluetooth, so please try again on a different device. \nThe app will be now terminated.</string>
     <string name="bluetooth_not_available_title">Bluetooth not available</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
 </resources>
